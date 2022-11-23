@@ -1,6 +1,7 @@
 package secuCom.example.SecuCom.Modeles;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -27,10 +28,11 @@ public class Roles {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private long id;
+
     private String libelle;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "role")
-    List<Personnes> utilisateurs = new ArrayList<>();
+    Collection<Personnes> personnes = new ArrayList<>();
 }
 
