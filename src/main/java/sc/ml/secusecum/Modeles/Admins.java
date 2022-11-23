@@ -1,4 +1,4 @@
-package secuCom.example.SecuCom.Modeles;
+package sc.ml.secusecum.Modeles;
 
 
 import javax.persistence.*;

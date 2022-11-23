@@ -1,4 +1,5 @@
-package secuCom.example.SecuCom.Modeles;
+package sc.ml.secusecum.Modeles;
+
 
 import javax.persistence.*;
 
@@ -12,9 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@DiscriminatorValue("USER")
+@DiscriminatorValue("COLL")
 
-public class users {
+public class collaborateurs {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

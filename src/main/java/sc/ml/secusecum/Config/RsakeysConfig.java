@@ -1,4 +1,4 @@
-package secuCom.example.SecuCom.Config;
+package sc.ml.secusecum.Config;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

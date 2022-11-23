@@ -1,4 +1,4 @@
-package secuCom.example.SecuCom.Config;
+package sc.ml.secusecum.Config;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -21,13 +21,17 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.servlet.FilterChain;
-
 @Configuration
 @EnableWebSecurity
 public class Securityconfiguration{
 
     private RsakeysConfig rsakeysConfig;
+
+    public Securityconfiguration(RsakeysConfig rsakeysConfig) {
+        this.rsakeysConfig = rsakeysConfig;
+    }
+
+
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
         return new InMemoryUserDetailsManager(

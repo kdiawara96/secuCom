@@ -1,4 +1,4 @@
-package secuCom.example.SecuCom;
+package sc.ml.secusecum;
 
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -21,7 +21,7 @@ public class GenerateKeyPair {
         byte[] pri = keyPair.getPrivate().getEncoded();
 
         //cela va nous permettre de generer un fichier .pem
-        PemWriter pemWriter = new PemWriter((new OutputStreamWriter(new FileOutputStream("pub.pem"))));
+        PemWriter pemWriter = new PemWriter((new OutputStreamWriter(new FileOutputStream("public.pem"))));
         //l'entête du fichier
         PemObject pemObject = new PemObject("PUBLIC KEY", pub);
         //Ici nous enregistrons en base64
@@ -29,7 +29,7 @@ public class GenerateKeyPair {
         //Et ici nous fermons
         pemWriter.close();
 
-        PemWriter pemWriter2 = new PemWriter(new OutputStreamWriter(new FileOutputStream("pri.pem")));
+        PemWriter pemWriter2 = new PemWriter(new OutputStreamWriter(new FileOutputStream("private.pem")));
         PemObject pemObject2 = new PemObject("PRIVATE KEY", pri);
         pemWriter2.writeObject(pemObject2);
         pemWriter2.close();
