@@ -1,4 +1,4 @@
-package secuCom.ml.secu_Com;
+package secuCom.example.SecuCom;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

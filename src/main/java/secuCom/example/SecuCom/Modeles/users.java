@@ -1,4 +1,4 @@
-package secuCom.ml.secu_Com.Modeles;
+package secuCom.example.SecuCom.Modeles;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -8,8 +8,8 @@ import lombok.Data;
 @Entity
 @Data
 
-@DiscriminatorValue("COLL")
+@DiscriminatorValue("USER")
 
-public class collaborateurs {
+public class users {
     
 }

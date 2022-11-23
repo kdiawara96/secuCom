@@ -1,4 +1,4 @@
-package secuCom.ml.secu_Com;
+package secuCom.example.SecuCom;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

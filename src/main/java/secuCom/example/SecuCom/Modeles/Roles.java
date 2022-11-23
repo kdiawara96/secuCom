@@ -1,4 +1,4 @@
-package secuCom.ml.secu_Com.Modeles;
+package secuCom.example.SecuCom.Modeles;
 
 import java.util.ArrayList;
 import java.util.List;
