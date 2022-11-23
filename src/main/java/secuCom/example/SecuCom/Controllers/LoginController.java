@@ -1,3 +1,4 @@
+/*
 package secuCom.example.SecuCom.Controllers;
 
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -55,3 +56,5 @@ public class LoginController {
 
 
 }
+
+*/
