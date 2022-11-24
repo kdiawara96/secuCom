@@ -1,7 +1,10 @@
 package sc.ml.secusecum.Controllers;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -10,26 +13,45 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class AuthController {
 
     //Pour generer un token à l'auth nous devons injecter jwt encoder
     private JwtEncoder jwtEncoder;
 
-    public  AuthController(JwtEncoder jwtEncoder) {
-        this.jwtEncoder = jwtEncoder;
-    }
+
+    private  AuthenticationManager authenticationManager;
+
+
+
+
+
 
     @PostMapping("/token")
-    //Pour faire l'authentification j'aurais besoin d'envoyé le userName et le mot de pass
-    //Ici comme nous utilisons l'auth basic (dans la requête http nous envoyons username et le role en mode base64 et spring securité va s'en charger de l'auth )nous pouvons utiliser l'autentification
-    //ça va nous permettre de recuperer username et les roles
-    public Map<String, String> jwtToken(Authentication authentication){
+    //(1)   Pour faire l'authentification j'aurais besoin d'envoyé le userName et le mot de pass
+    //(1)   Ici comme nous utilisons l'auth basic (dans la requête http nous envoyons username et le role en mode base64 et spring securité va s'en charger de l'auth )nous pouvons utiliser l'autentification
+    //(1)   ça va nous permettre de recuperer username et les roles
+
+    //(2)  Utilisateur va envoyé le userName et le password et nous allons faire l'authentification et pour le faire je dois déclarer  l'authenticationManager
+    //(2) Parce que dans le auth basique ces spring qui le fait automatiquement (dans la requête http nous envoyons username et le role en mode base64 et spring securité va s'en charger de l'auth )nous pouvons utiliser l'autentification)
+    //(2)  Mais maintenant c'est à nous de le faire au niveau du code
+
+    public Map<String, String> jwtToken(String username, String password){
+
+        //Nous allons demander à spring ici authentifie nous cette utilisateur
+        //pour cela nous allons lui trensmettre un objet New UsernamePasswordAuthenticationToken(username, password)
+
+       Authentication authentication = authenticationManager.authenticate(
+
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
 
         Map<String, String> idToken = new HashMap<>();
 
