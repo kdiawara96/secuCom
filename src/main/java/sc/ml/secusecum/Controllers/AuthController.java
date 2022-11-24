@@ -1,10 +1,11 @@
-package sc.ml.secusecum.Controllers;
+package sc.ml.secusecum.Cnullollers;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -18,7 +19,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
 @NoArgsConstructor
 
 public class AuthController {
@@ -26,13 +26,13 @@ public class AuthController {
     //Pour generer un token à l'auth nous devons injecter jwt encoder
     private JwtEncoder jwtEncoder;
 
+    //Pour faire l'auth j'ai besoin d'utiliser ceci
+    private AuthenticationManager authenticationManager;
 
-    private  AuthenticationManager authenticationManager;
-
-
-
-
-
+    public AuthController(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager){
+        this.jwtEncoder = jwtEncoder;
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping("/token")
     //(1)   Pour faire l'authentification j'aurais besoin d'envoyé le userName et le mot de pass
@@ -43,7 +43,12 @@ public class AuthController {
     //(2) Parce que dans le auth basique ces spring qui le fait automatiquement (dans la requête http nous envoyons username et le role en mode base64 et spring securité va s'en charger de l'auth )nous pouvons utiliser l'autentification)
     //(2)  Mais maintenant c'est à nous de le faire au niveau du code
 
-    public Map<String, String> jwtToken(String username, String password){
+
+    // tout d'abord il faut souligner qu'il n'est pas récommander de créer un refresh token pour les
+    //application web mais pour les application mobile
+    //Nous allons créer un booléan
+
+    public Map<String, String> jwtToken(String username, String password, boolean withRefreshToken){
 
         //Nous allons demander à spring ici authentifie nous cette utilisateur
         //pour cela nous allons lui trensmettre un objet New UsernamePasswordAuthenticationToken(username, password)
@@ -65,8 +70,10 @@ public class AuthController {
        String scope = authentication
                .getAuthorities()
                .stream()
-               .map(auth-> auth
-               .getAuthority())
+               //Cette maniere avec lamda ou cette partie commenter
+               .map(GrantedAuthority::getAuthority)
+               //.map(auth-> auth
+              // .getAuthority())
                .collect(Collectors
                .joining(" "));
 
@@ -85,16 +92,28 @@ public class AuthController {
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .subject(authentication.getName())
                 .issuedAt(instant)
-                .expiresAt(instant.plus(5, ChronoUnit.MINUTES))
+                //Nous allons mettre une condition si refreshToken est demander nous donnons 5 minutes sinon nous aurons 30 minutes
+                .expiresAt(instant.plus(withRefreshToken?5:30, ChronoUnit.MINUTES))
                 .issuer("security-com")
+                //Va nous permettre d'envoyer les rôles
                 .claim("scope", scope)
                 .build();
-
-        //
         String jwtAccesToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
 
         idToken.put("accessToken", jwtAccesToken);
-
+         if(withRefreshToken){
+             JwtClaimsSet jwtClaimsSetRefresh = JwtClaimsSet.builder()
+                     .subject(authentication.getName())
+                     .issuedAt(instant)
+                     //Nous allons mettre une condition si refreshToken est demander nous donnons 5 minutes sinon nous aurons 30 minutes
+                     .expiresAt(instant.plus(30, ChronoUnit.MINUTES))
+                     .issuer("security-com")
+                     //dans le refresh Token nous n'avons pas besoin d'envoyer les rôles du coup nous allons commenter la ligne suivante
+                    // .claim("scope", scope)
+                     .build();
+             String jwtRefreshToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSetRefresh)).getTokenValue();
+             idToken.put("refreshToken",jwtRefreshToken);
+         }
         return idToken;
     }
 }

@@ -76,8 +76,10 @@ public class Securityconfiguration{
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws  Exception{
 
+
         return httpSecurity
                 .csrf(csrf->csrf.disable())
+                //Il donner l'autorisation au user à s'authentifier à travers ce url
                 .authorizeRequests(auth->auth.antMatchers("/token/**").permitAll())
                 .authorizeRequests(auth->auth.anyRequest().authenticated())
                 .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
