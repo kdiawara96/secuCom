@@ -1,21 +1,20 @@
 package sc.ml.secusecum.Controllers;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,12 +25,18 @@ public class AuthController {
     //Pour generer un token à l'auth nous devons injecter jwt encoder
     private JwtEncoder jwtEncoder;
 
+    private JwtDecoder jwtDecoder;
+
     //Pour faire l'auth j'ai besoin d'utiliser ceci
     private AuthenticationManager authenticationManager;
 
-    public AuthController(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager){
+    private UserDetailsService userDetailsService;
+
+    public AuthController(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, AuthenticationManager authenticationManager, UserDetailsService userDetailsService){
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
         this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
     }
 
 
@@ -50,16 +55,63 @@ public class AuthController {
     //Nous allons créer un booléan
 
 
-    public Map<String, String> jwtToken(String username, String password, boolean withRefreshToken){
+    public ResponseEntity<Map<String, String>> jwtToken(
+            String grantType,
+            String username,
+            String password,
+            boolean withRefreshToken,
+            String refreshToken
+    ){
 
         //Nous allons demander à spring ici authentifie nous cette utilisateur
         //pour cela nous allons lui trensmettre un objet New UsernamePasswordAuthenticationToken(username, password)
 
+        String subject = null;
+        String scope = null;
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+        if (grantType.equals("password")){
 
-        );
+            Authentication authentication = authenticationManager.authenticate(
+                     new UsernamePasswordAuthenticationToken(username, password)
+
+             );
+
+            subject= authentication.getName();
+
+            // Nous allons prendre les autorisations et les séparer avec de l'espace et cela va nous donner
+            //Une chaine de caractère
+            scope = authentication
+                    .getAuthorities()
+                    .stream()
+                    //Cette maniere avec lamda ou cette partie commenter
+                    .map(GrantedAuthority::getAuthority)
+                    //.map(auth-> auth
+                    // .getAuthority())
+                    .collect(Collectors
+                            .joining(" "));
+
+
+         }else if(grantType.equals("refreshToken")){
+            if (refreshToken == null){
+                //Un message si la durée du refresh token à expiré
+                return new ResponseEntity<>(Map.of("errorMessage","Refresh Token is requeried"), HttpStatus.UNAUTHORIZED);
+            }
+            //A partir du refresh token je connais le user name
+            //et à partir de l'user je recupère les roles de cette user
+
+            Jwt decodeJWT = null;
+            try {
+                //quand nous decodons il va verifier s'il n'est pas expirer
+                decodeJWT = jwtDecoder.decode(refreshToken);
+            } catch (JwtException e) {
+                return new ResponseEntity<>(Map.of("errorMessage",e.getMessage()), HttpStatus.UNAUTHORIZED);
+            }
+            String subjet = decodeJWT.getSubject();
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+             scope = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
+        }
+
 
         Map<String, String> idToken = new HashMap<>();
 
@@ -67,18 +119,9 @@ public class AuthController {
         //l'objet instance va nous permettre de capturer la date instante
         Instant instant = Instant.now();
 
-        // Nous allons prendre les autorisations et les séparer avec de l'espace et cela va nous donner
-        //Une chaine de caractère
 
-       String scope = authentication
-               .getAuthorities()
-               .stream()
-               //Cette maniere avec lamda ou cette partie commenter
-               .map(GrantedAuthority::getAuthority)
-               //.map(auth-> auth
-              // .getAuthority())
-               .collect(Collectors
-               .joining(" "));
+
+
 
          //Dans le jwt nous avons un ensemble de claim
 
@@ -93,7 +136,7 @@ public class AuthController {
         // claim va contenir les autorisation
 
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
-                .subject(authentication.getName())
+                .subject(subject)
                 .issuedAt(instant)
                 //Nous allons mettre une condition si refreshToken est demander nous donnons 5 minutes sinon nous aurons 30 minutes
                 .expiresAt(instant.plus(withRefreshToken?5:30, ChronoUnit.MINUTES))
@@ -106,7 +149,7 @@ public class AuthController {
         idToken.put("accessToken", jwtAccesToken);
          if(withRefreshToken){
              JwtClaimsSet jwtClaimsSetRefresh = JwtClaimsSet.builder()
-                     .subject(authentication.getName())
+                     .subject(subject)
                      .issuedAt(instant)
                      //Nous allons mettre une condition si refreshToken est demander nous donnons 5 minutes sinon nous aurons 30 minutes
                      .expiresAt(instant.plus(30, ChronoUnit.MINUTES))
@@ -117,6 +160,7 @@ public class AuthController {
              String jwtRefreshToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSetRefresh)).getTokenValue();
              idToken.put("refreshToken",jwtRefreshToken);
          }
-        return idToken;
+        return  new ResponseEntity<>(idToken, HttpStatus.UNAUTHORIZED);
+
     }
 }
