@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import sc.ml.secusecum.Config.RsakeysConfig;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@SpringBootApplication
 @EnableConfigurationProperties(RsakeysConfig.class)
 public class SecuSecumApplication {
 
