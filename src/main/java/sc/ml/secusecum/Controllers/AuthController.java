@@ -1,7 +1,9 @@
-package sc.ml.secusecum.Cnullollers;
+package sc.ml.secusecum.Controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,8 +21,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@NoArgsConstructor
-
 public class AuthController {
 
     //Pour generer un token à l'auth nous devons injecter jwt encoder
@@ -33,6 +33,7 @@ public class AuthController {
         this.jwtEncoder = jwtEncoder;
         this.authenticationManager = authenticationManager;
     }
+
 
     @PostMapping("/token")
     //(1)   Pour faire l'authentification j'aurais besoin d'envoyé le userName et le mot de pass
@@ -48,14 +49,16 @@ public class AuthController {
     //application web mais pour les application mobile
     //Nous allons créer un booléan
 
+
     public Map<String, String> jwtToken(String username, String password, boolean withRefreshToken){
 
         //Nous allons demander à spring ici authentifie nous cette utilisateur
         //pour cela nous allons lui trensmettre un objet New UsernamePasswordAuthenticationToken(username, password)
 
-       Authentication authentication = authenticationManager.authenticate(
 
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
+
         );
 
         Map<String, String> idToken = new HashMap<>();
