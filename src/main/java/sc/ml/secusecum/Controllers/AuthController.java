@@ -147,6 +147,7 @@ public class AuthController {
         String jwtAccesToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
 
         idToken.put("accessToken", jwtAccesToken);
+        //lol
          if(withRefreshToken){
              JwtClaimsSet jwtClaimsSetRefresh = JwtClaimsSet.builder()
                      .subject(subject)
