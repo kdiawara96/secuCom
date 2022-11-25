@@ -27,12 +27,12 @@ public class Roles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private long id;
+    private Long id;
 
-    private String libelle;
+    private String nomrole;
+
+    private String description;
 
 
-    @OneToMany(mappedBy = "role")
-    Collection<Personnes> personnes = new ArrayList<>();
 }
 

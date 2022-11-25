@@ -1,5 +1,6 @@
 package sc.ml.secusecum;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -22,5 +23,6 @@ public class SecuSecumApplication {
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
+
 
 }

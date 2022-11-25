@@ -71,6 +71,7 @@ public class Securityconfiguration{
                 User.withUsername("admin").password(passwordEncoder.encode("1234")).authorities("USER","COLl","ADMIN").build()
 
 
+
         );
     }
 
