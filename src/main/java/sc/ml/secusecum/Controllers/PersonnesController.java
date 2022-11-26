@@ -14,8 +14,10 @@ import sc.ml.secusecum.Services.PersonnesServices;
 import sc.ml.secusecum.Services.RoleService;
 
 import javax.management.relation.Role;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @RestController
@@ -34,14 +36,30 @@ public class PersonnesController{
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public Personnes create(Authentication auauthentication, @RequestBody Personnes personnes){
 
-        System.err.println(( Roles)personnes.getRoles());
+
+
+
 
        // Roles role = roleService.findbyname(( Roles));
 
-        Roles role = rol.findByName((Roles) personnes.getRoles());
-        //personnes.setRoles(personnes.getRoles().add(role));
+        //Roles role = rol.findByName(personnes.getRoles().toString());
 
-        roleService.AddRoleToUser(personnes.getUsername(), (Roles) personnes.getRoles());
+       // Set<Roles> roleee = new HashSet<>();
+        //roleee.add(role);
+
+        /*if (role.equals(null)){
+
+        }else{
+
+        }*/
+        //personnes.setRoles(roleee);
+
+        Roles role = rol.findByName(personnes.getRoles().toString());
+        Set<Roles> rolee = new HashSet<>();
+        rolee.add(role);
+        personnes.setRoles(rolee);
+
+        //roleService.AddRoleToUser(personnes.getUsername(), (Roles) personnes.getRoles());
         personnes.setPassword(passwordEncoder.encode(personnes.getPassword()));
         return personnesServices.createUser(personnes);
     }
