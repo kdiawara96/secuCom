@@ -12,32 +12,35 @@ import java.util.List;
 @AllArgsConstructor
 public class PersonnesServiceImpl implements PersonnesServices {
 
-    private final PersonnesRepo personnesRepo;
+    private PersonnesRepo personnesRepo;
 
     @Override
-    public Personnes creer(Personnes personnes) {
+    public Personnes createUser(Personnes personnes) {
         return personnesRepo.save(personnes);
     }
 
     @Override
-    public List<Personnes> lister() {
+    public List<Personnes> readUser() {
         return personnesRepo.findAll();
     }
 
     @Override
-    public Personnes update(Long id, Personnes personnes) {
-        return personnesRepo.findById(id).map(person->{
-            person.setName(person.getName());
-            person.setUsername(person.getUsername());
-            person.setEmail(person.getEmail());
-            person.setPassword(person.getPassword());
-            return personnesRepo.save(person);
-        }).orElseThrow(()->new RuntimeException("Personne non trouver"));
+    public Personnes update(Long id, Personnes personne) {
+        return personnesRepo.findById(id).map(p->{
+            p.setEmail(p.getEmail());
+            p.setUsername(p.getUsername());
+            p.setRoles(p.getRoles());
+            p.setPassword(p.getPassword());
+
+
+            return personnesRepo.save(p);
+
+        }).orElseThrow(()->new RuntimeException("Personne non trouvé!"));
     }
 
     @Override
     public String delete(Long id) {
         personnesRepo.deleteById(id);
-        return "Personne supprimé!";
+        return "Personne supprimé avec plaisir";
     }
 }

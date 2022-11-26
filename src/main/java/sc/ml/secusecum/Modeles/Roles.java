@@ -1,38 +1,43 @@
 package sc.ml.secusecum.Modeles;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import javax.persistence.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+@Data
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-
-
+@Table(name = "roles")
 public class Roles {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    private Long id;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERoles name;
 
-    private String nomrole;
+    public Roles() {
 
-    private String description;
+    }
 
+    public Roles(ERoles name) {
+        this.name = name;
+    }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public ERoles getName() {
+        return name;
+    }
+
+    public void setRolesName(ERoles name) {
+        this.name = name;
+    }
 }
-

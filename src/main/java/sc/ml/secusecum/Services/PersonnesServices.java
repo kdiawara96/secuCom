@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface PersonnesServices {
 
-    Personnes creer(Personnes personnes);
+    Personnes createUser(Personnes personnes);
 
-    List<Personnes> lister();
+    List<Personnes> readUser();
 
-    Personnes update(Long id , Personnes personnes);
+    Personnes update(Long id, Personnes personne);
 
     String delete(Long id);
 }

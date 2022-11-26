@@ -65,12 +65,10 @@ public class Securityconfiguration{
     @Bean
     public UserDetailsService inMemoryUserDetailsManager(){
         return new InMemoryUserDetailsManager(
-                //nous allons utiliser password(passwordEncoder.encode( Pour cripter notre code
-                User.withUsername("collaborateur").password(passwordEncoder.encode("1234")).authorities("COLL").build(),
-                User.withUsername("user").password(passwordEncoder.encode("1234")).authorities("USER").build(),
+                 //nous allons utiliser password(passwordEncoder.encode( Pour cripter notre code
+                // User.withUsername("collaborateur").password(passwordEncoder.encode("1234")).authorities("COLL").build(),
+               // User.withUsername("user").password(passwordEncoder.encode("1234")).authorities("USER").build(),
                 User.withUsername("admin").password(passwordEncoder.encode("1234")).authorities("USER","COLl","ADMIN").build()
-
-
 
         );
     }
@@ -82,7 +80,7 @@ public class Securityconfiguration{
         return httpSecurity
                 .csrf(csrf->csrf.disable())
                 //Il donner l'autorisation au user à s'authentifier à travers ce url
-                .authorizeRequests(auth->auth.antMatchers("/token/**").permitAll())
+                 .authorizeRequests(auth->auth.antMatchers("/token/**").permitAll())
                 .authorizeRequests(auth->auth.anyRequest().authenticated())
                 .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
