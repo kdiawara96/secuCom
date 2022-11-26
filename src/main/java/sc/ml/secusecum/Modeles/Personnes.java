@@ -35,7 +35,6 @@ public class Personnes {
  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
  private String password;
 
- @JsonIgnore
  @ManyToMany(fetch = FetchType.LAZY)
  @JoinTable(name = "personnes_roles",
          joinColumns = @JoinColumn(name = "personne_id"),

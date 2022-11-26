@@ -20,7 +20,8 @@ import java.util.Set;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RsakeysConfig.class)
-public class SecuSecumApplication implements CommandLineRunner{
+//implements CommandLineRunner
+public class SecuSecumApplication {
 
 	@Autowired
 	private PersonnesRepo personnesRepo;
@@ -42,7 +43,7 @@ public class SecuSecumApplication implements CommandLineRunner{
 	}
 
 
-	@Override
+/*	@Override
 	public void run(String... args) throws Exception {
 
 		Personnes personnes = new Personnes();
@@ -58,5 +59,5 @@ public class SecuSecumApplication implements CommandLineRunner{
 		personnes.setEmail("karimdiawara96@gmail.com");
 
 		personnesRepo.save(personnes);
-	}
+	}*/
 }

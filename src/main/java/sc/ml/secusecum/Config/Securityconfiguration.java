@@ -118,6 +118,7 @@ public class Securityconfiguration{
                 //Il donner l'autorisation au user à s'authentifier à travers ce url
                 .authorizeRequests(auth->auth.antMatchers("/token/**").permitAll())
                 .authorizeRequests(auth->auth.anyRequest().authenticated())
+                .formLogin().and()
                 .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .httpBasic(Customizer.withDefaults())

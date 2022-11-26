@@ -40,26 +40,7 @@ public class PersonnesController{
 
 
 
-       // Roles role = roleService.findbyname(( Roles));
-
-        //Roles role = rol.findByName(personnes.getRoles().toString());
-
-       // Set<Roles> roleee = new HashSet<>();
-        //roleee.add(role);
-
-        /*if (role.equals(null)){
-
-        }else{
-
-        }*/
-        //personnes.setRoles(roleee);
-
-        Roles role = rol.findByName(personnes.getRoles().toString());
-        Set<Roles> rolee = new HashSet<>();
-        rolee.add(role);
-        personnes.setRoles(rolee);
-
-        //roleService.AddRoleToUser(personnes.getUsername(), (Roles) personnes.getRoles());
+       
         personnes.setPassword(passwordEncoder.encode(personnes.getPassword()));
         return personnesServices.createUser(personnes);
     }
