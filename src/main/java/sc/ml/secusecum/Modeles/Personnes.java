@@ -3,6 +3,8 @@ package sc.ml.secusecum.Modeles;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.HashSet;
@@ -29,13 +31,21 @@ public class Personnes {
  private String email;
 
  @Column(name = "password", length = 120)
+ //Cette annotation va nous permettre de cacher le mot de passe lors de l'affichage du user
+ @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
  private String password;
 
+ @JsonIgnore
  @ManyToMany(fetch = FetchType.LAZY)
  @JoinTable(name = "personnes_roles",
          joinColumns = @JoinColumn(name = "personne_id"),
          inverseJoinColumns = @JoinColumn(name = "role_id"))
  private Set<Roles> roles = new HashSet<>();
+
+
+
+
+
 
  public Personnes() {
  }

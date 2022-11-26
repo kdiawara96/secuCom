@@ -1,5 +1,6 @@
 package sc.ml.secusecum.Modeles;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
 
 import lombok.Data;
@@ -11,33 +12,33 @@ import lombok.Data;
 public class Roles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private ERoles name;
+   // @Enumerated(EnumType.STRING)
+    @Column(length = 15, unique = true, nullable = false)
+    private String name;
 
     public Roles() {
 
     }
 
-    public Roles(ERoles name) {
+    public Roles(String name) {
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public ERoles getName() {
+    public String getName() {
         return name;
     }
 
-    public void setRolesName(ERoles name) {
+    public void setRolesName(String name) {
         this.name = name;
     }
 }

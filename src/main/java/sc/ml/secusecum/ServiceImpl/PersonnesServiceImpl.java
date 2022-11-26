@@ -43,4 +43,9 @@ public class PersonnesServiceImpl implements PersonnesServices {
         personnesRepo.deleteById(id);
         return "Personne supprimé avec plaisir";
     }
+
+    @Override
+    public Personnes readByUserName(String username) {
+        return personnesRepo.findByUsername(username);
+    }
 }

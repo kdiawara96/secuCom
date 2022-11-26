@@ -15,4 +15,6 @@ public interface PersonnesServices {
     Personnes update(Long id, Personnes personne);
 
     String delete(Long id);
+
+    Personnes readByUserName(String username);
 }
