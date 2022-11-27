@@ -42,7 +42,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/token")
+    @PostMapping("/authentification")
     //(1)   Pour faire l'authentification j'aurais besoin d'envoyé le userName et le mot de pass
     //(1)   Ici comme nous utilisons l'auth basic (dans la requête http nous envoyons username et le role en mode base64 et spring securité va s'en charger de l'auth )nous pouvons utiliser l'autentification
     //(1)   ça va nous permettre de recuperer username et les roles

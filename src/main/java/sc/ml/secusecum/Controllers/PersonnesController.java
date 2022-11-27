@@ -40,7 +40,7 @@ public class PersonnesController{
 
 
 
-       
+
         personnes.setPassword(passwordEncoder.encode(personnes.getPassword()));
         return personnesServices.createUser(personnes);
     }
