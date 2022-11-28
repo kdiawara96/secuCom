@@ -78,7 +78,9 @@ public class Securityconfiguration{
 
 
 
-   /* @Bean
+   /*
+   //Basique authentification
+   @Bean
     public UserDetailsService inMemoryUserDetailsManager(){
         return new InMemoryUserDetailsManager(
                  //nous allons utiliser password(passwordEncoder.encode( Pour cripter notre code

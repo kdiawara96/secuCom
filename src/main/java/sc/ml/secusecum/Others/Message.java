@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
+
     public static ResponseEntity<Object> Response(String message, HttpStatus status, Object object) {
 
         Map<String, Object> map = new HashMap<String, Object>();
