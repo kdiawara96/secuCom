@@ -40,10 +40,11 @@ import java.util.Collection;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)//pour spécifier les role dans le controller il faut cette annotation dans le security config
+
 public class Securityconfiguration{
 
+    //Nous allons injecter ces attributs et declarer dans le constructeur
     private RsakeysConfig rsakeysConfig;
-    //Nous allons injecter password encoder et declarer dans le constructeur
     private PasswordEncoder passwordEncoder;
     private UserDetailsService userDetailsService;
     private PersonnesServices personnesServices;
@@ -55,12 +56,6 @@ public class Securityconfiguration{
         this.personnesServices = personnesServices;
     }
 
-    //nous allons remplacer l'authentification basique en authentification personnaliser pour cela nous allons faire ceci
-    //cela n'est pas recommander nous allons faire un autre modèle
-  //  @Bean
-  //  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)throws Exception{
-   //     return authenticationConfiguration.getAuthenticationManager();
-    //}
 
     @Bean
    // public AuthenticationManager authenticationManager(UserDetailsService userDetailsService){
@@ -78,22 +73,8 @@ public class Securityconfiguration{
 
 
 
-   /*
-   //Basique authentification
-   @Bean
-    public UserDetailsService inMemoryUserDetailsManager(){
-        return new InMemoryUserDetailsManager(
-                 //nous allons utiliser password(passwordEncoder.encode( Pour cripter notre code
-                User.withUsername("collaborateur").password(passwordEncoder.encode("1234")).authorities("COLL").build(),
-                User.withUsername("user").password(passwordEncoder.encode("1234")).authorities("USER").build(),
-                User.withUsername("admin").password(passwordEncoder.encode("1234")).authorities("USER","COLl","ADMIN").build()
-
-        );
-    }
-    */
-
-
     public UserDetailsService userDetailsService(AuthenticationManagerBuilder auth) throws Exception{
+
         auth.userDetailsService(new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -107,6 +88,7 @@ public class Securityconfiguration{
                 return new User(personnes.getUsername(), personnes.getPassword(),authorities);
             }
         });
+
         return null;
     }
 
@@ -116,6 +98,7 @@ public class Securityconfiguration{
 
 
         return httpSecurity
+                //Pour eviter les attaques csrf
                 .csrf(csrf->csrf.disable())
                 //Il donner l'autorisation au user à s'authentifier à travers ce url
                 .authorizeRequests(auth->auth.antMatchers("/authentification/**").permitAll())

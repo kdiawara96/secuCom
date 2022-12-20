@@ -82,6 +82,7 @@ public class AuthController {
 
             // Nous allons prendre les autorisations et les séparer avec de l'espace et cela va nous donner
             //Une chaine de caractère
+
             scope = authentication
                     .getAuthorities()
                     .stream()
@@ -96,7 +97,7 @@ public class AuthController {
          }else if(grantType.equals("refreshToken")){
             if (refreshToken == null){
                 //Un message si la durée du refresh token à expiré
-                return new ResponseEntity<>(Map.of("errorMessage","Refresh Token is requeried"), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(Map.of("errorMessage : ","Refresh Token is requeried"), HttpStatus.UNAUTHORIZED);
             }
             //A partir du refresh token je connais le user name
             //et à partir de l'user je recupère les roles de cette user
@@ -106,10 +107,11 @@ public class AuthController {
                 //quand nous decodons il va verifier s'il n'est pas expirer
                 decodeJWT = jwtDecoder.decode(refreshToken);
             } catch (JwtException e) {
-                return new ResponseEntity<>(Map.of("errorMessage",e.getMessage()), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(Map.of("errorMessage :",e.getMessage()), HttpStatus.UNAUTHORIZED);
             }
-            String subjet = decodeJWT.getSubject();
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            //String subjet = decodeJWT.getSubject();
+            subject = decodeJWT.getSubject();
+            UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
             Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
              scope = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
         }
@@ -129,19 +131,22 @@ public class AuthController {
 
         //Nous avons subject qui represente username et nous allons recuperer avec le authentication.getName
 
-        //issuedAt contient la date de la generation du token c'est pour ça nous utilisons instant
+
 
         //expirestAt va contenir la date d'expiration du token et nous spefissons la date d'expiration
 
-        //issuer va contenir le nom de l'application qui à generer le token
+
 
         // claim va contenir les autorisation
 
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .subject(subject)
+                //issuedAt contient la date de la generation du token c'est pour ça nous utilisons instant
                 .issuedAt(instant)
-                //Nous allons mettre une condition si refreshToken est demander nous donnons 5 minutes sinon nous aurons 30 minutes
-                .expiresAt(instant.plus(withRefreshToken?5:30, ChronoUnit.MINUTES))
+                //expirestAt va contenir la date d'expiration du token et nous spefissons la date d'expiration
+                //Nous allons mettre une condition si refreshToken est demander nous donnons 5 minutes au access token sinon nous aurons 30 minutes
+                .expiresAt(instant.plus(withRefreshToken?10:30, ChronoUnit.MINUTES))
+                //issuer va contenir le nom de l'application qui à generer le token
                 .issuer("security-com")
                 //Va nous permettre d'envoyer les rôles
                 .claim("scope", scope)
@@ -163,7 +168,7 @@ public class AuthController {
              String jwtRefreshToken = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSetRefresh)).getTokenValue();
              idToken.put("refreshToken",jwtRefreshToken);
          }
-        return  new ResponseEntity<>(idToken, HttpStatus.UNAUTHORIZED);
+        return  new ResponseEntity<>(idToken, HttpStatus.OK);
 
     }
 }

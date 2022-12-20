@@ -36,11 +36,6 @@ public class PersonnesController{
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public Personnes create(Authentication auauthentication, @RequestBody Personnes personnes){
 
-
-
-
-
-
         personnes.setPassword(passwordEncoder.encode(personnes.getPassword()));
         return personnesServices.createUser(personnes);
     }

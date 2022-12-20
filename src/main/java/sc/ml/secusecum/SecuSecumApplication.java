@@ -21,7 +21,7 @@ import java.util.Set;
 @SpringBootApplication
 @EnableConfigurationProperties(RsakeysConfig.class)
 //implements CommandLineRunner
-public class SecuSecumApplication {
+public class SecuSecumApplication{
 
 	@Autowired
 	private PersonnesRepo personnesRepo;
